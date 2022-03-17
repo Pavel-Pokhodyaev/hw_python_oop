@@ -1,17 +1,15 @@
 
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
 
     def get_message(self) -> str:
         return (f'Тип тренировки: {self.training_type}; '
@@ -47,7 +45,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError('Упс')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -60,19 +58,13 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    coeff_calorie_1 = 18
-    coeff_calorie_2 = 20
-
-    def __init__(self, action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
-        super().__init__(action, duration, weight)
+    COEFF_CALORIE_1 = 18
+    COEFF_CALORIE_2 = 20
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.coeff_calorie_1 * self.get_mean_speed()
-                - self.coeff_calorie_2) * self.weight
+        return ((self.COEFF_CALORIE_1 * self.get_mean_speed()
+                - self.COEFF_CALORIE_2) * self.weight
                 / self.M_IN_KM * (self.duration * self.T_MIN))
 
     def __str__(self):
@@ -137,24 +129,25 @@ class Swimming(Training):
         return 'Swimming'
 
 
-def read_package(workout_type: str, data: list) -> Training:
+def read_package(workout_type: str, data: List[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    workout_types = {
+    workout_types: dict[str, Training] = {
         'RUN': Running,
         'WLK': SportsWalking,
         'SWM': Swimming
     }
-    workout = workout_types[workout_type]
-    action, duration, weight = data[:3]
+    return workout_types[workout_type](*data)
+    #workout = workout_types[workout_type]
+    #action, duration, weight = data[:3]
 
-    if workout_type == 'RUN':
-        return workout(action, duration, weight)
-    elif workout_type == 'WLK':
-        height = data[3]
-        return workout(action, duration, weight, height)
-    else:
-        length_pool, count_pool = data[3:]
-        return workout(action, duration, weight, length_pool, count_pool)
+    #if workout_type == 'RUN':
+        #return workout(action, duration, weight)
+    #elif workout_type == 'WLK':
+        #height = data[3]
+        #return workout(action, duration, weight, height)
+    #else:
+        #length_pool, count_pool = data[3:]
+        #return workout(action, duration, weight, length_pool, count_pool)
 
 
 def main(training: Training) -> None:
