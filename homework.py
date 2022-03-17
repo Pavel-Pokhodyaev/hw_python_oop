@@ -1,6 +1,5 @@
-
 from dataclasses import dataclass
-from typing import List
+
 
 @dataclass
 class InfoMessage:
@@ -129,7 +128,7 @@ class Swimming(Training):
         return 'Swimming'
 
 
-def read_package(workout_type: str, data: List[int]) -> Training:
+def read_package(workout_type: str, data: list[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
     workout_types: dict[str, Training] = {
         'RUN': Running,
@@ -137,17 +136,6 @@ def read_package(workout_type: str, data: List[int]) -> Training:
         'SWM': Swimming
     }
     return workout_types[workout_type](*data)
-    #workout = workout_types[workout_type]
-    #action, duration, weight = data[:3]
-
-    #if workout_type == 'RUN':
-        #return workout(action, duration, weight)
-    #elif workout_type == 'WLK':
-        #height = data[3]
-        #return workout(action, duration, weight, height)
-    #else:
-        #length_pool, count_pool = data[3:]
-        #return workout(action, duration, weight, length_pool, count_pool)
 
 
 def main(training: Training) -> None:
